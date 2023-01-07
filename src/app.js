@@ -25,9 +25,9 @@ app.use(express.json());
 
 // Test route
 app.get('/', (req, res) => {
-    res.json({
-        message: 'Hello world',
-    });
+  res.json({
+    message: 'Hello world',
+  });
 });
 
 // Mount the API router

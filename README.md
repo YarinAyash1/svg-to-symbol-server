@@ -25,7 +25,7 @@
 ### API
 The app has an API with the following routes:
 
-*  POST `/api/v1/convert-to-symbol`: Converts the provided SVG data to a symbol and returns it.
+*  POST `/api/v1/convert`: Converts the provided SVG data to a symbol and returns it.
 
 ### Middlewares
 The app has the following custom middlewares:
