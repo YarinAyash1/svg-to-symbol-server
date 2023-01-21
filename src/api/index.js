@@ -28,8 +28,10 @@ const inlineStyleMiddleware = (req, res, next) => {
 };
 
 const getUuid = () => 'xxxxqxxxx'.replace(/[xy]/g, (c) => {
-  let r = Math.random() * 16 | 0;
-  let v = c === 'x' ? r : (r & 0x3 | 0x8);
+  // eslint-disable-next-line no-bitwise
+  const r = Math.random() * 16 | 0;
+  // eslint-disable-next-line no-bitwise,no-mixed-operators
+  const v = c === 'x' ? r : (r & 0x3 | 0x8);
   return v.toString(16);
 });
 
@@ -82,7 +84,6 @@ router.post('/convert-upload', inlineStyleMiddleware, (req, res) => {
   const symbols = [];
   if (!Array.isArray(req.files.svgFiles)) req.files.svgFiles = [req.files.svgFiles];
   req.files.svgFiles.forEach((file) => {
-
     if (file.mimetype !== 'image/svg+xml') {
       res.status(503)
         .send({
