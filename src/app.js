@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 // Load environment variables from .env file
 require('dotenv').config();
@@ -22,6 +23,8 @@ app.use(cors());
 
 // Parse JSON requests
 app.use(express.json());
+
+app.use(fileUpload());
 
 // Test route
 app.get('/', (req, res) => {
