@@ -130,4 +130,10 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/keep-alive', (req, res) => {
+  res.json({
+    message: 'Im Alive!',
+  });
+});
+
 module.exports = router;
