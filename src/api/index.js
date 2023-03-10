@@ -80,10 +80,10 @@ router.post('/convert', inlineStyleMiddleware, (req, res) => {
 
 router.post('/convert-upload', inlineStyleMiddleware, (req, res) => {
   // Create a new instance of SVGSpriter
-  const spriter = new SVGSpriter(config);
   const symbols = [];
   if (!Array.isArray(req.files.svgFiles)) req.files.svgFiles = [req.files.svgFiles];
   req.files.svgFiles.forEach((file) => {
+    const spriter = new SVGSpriter(config);
     if (file.mimetype !== 'image/svg+xml') {
       res.status(503)
         .send({
