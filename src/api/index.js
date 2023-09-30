@@ -78,6 +78,46 @@ router.post('/convert', inlineStyleMiddleware, (req, res) => {
   });
 });
 
+// New route to convert a symbol to an SVG element
+router.post('/convert-symbol', inlineStyleMiddleware, (req, res) => {
+  // eslint-disable-next-line max-len
+  const symbolString = req.body.symbol; // Assuming the symbol is sent as a string in the request body
+
+  // Check if symbolString exists in the request body
+  if (!symbolString) {
+    res.status(400)
+      .json({ error: 'Symbol string not provided in the request body' });
+  }
+
+  // Replace <symbol> with <svg> while keeping the attributes
+  const svgElement = symbolString.replace(/<symbol([^>]*)>/, '<svg$1>');
+
+  // Replace </symbol> with </svg>
+  const finalSvgElement = svgElement.replace('</symbol>', '</svg>');
+
+  // Send the converted SVG element back to the client
+  const generatedSymbols = `<svg style="position: absolute; width: 0; height: 0;" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">${symbolString}</svg> `;
+
+  // Use a regular expression to search for the id attribute within the symbolString
+  const idMatch = symbolString.match(/id="([^"]*)"/);
+
+  // Check if the id attribute is found
+  if (!idMatch || !idMatch[1]) {
+    res.status(400)
+      .json({ error: 'Failed to extract the id attribute from the symbol string' });
+  }
+
+  // Extracted id attribute value
+  const idAttribute = idMatch[1];
+  res.type('json')
+    .status(200)
+    .send({
+      symbol: generatedSymbols,
+      svgId: idAttribute,
+      input: finalSvgElement,
+    });
+});
+
 router.post('/convert-upload', inlineStyleMiddleware, (req, res) => {
   // Create a new instance of SVGSpriter
   const symbols = [];
@@ -123,6 +163,25 @@ router.post('/convert-upload', inlineStyleMiddleware, (req, res) => {
       symbols,
     });
 });
+
+router.post('/export-all', (req, res) => {
+  const { symbols } = req.body;
+  let generatedSymbols = '<svg style="position: absolute; width: 0; height: 0;" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+  // eslint-disable-next-line guard-for-in,no-restricted-syntax
+  for (const symbolsKey in symbols) {
+    generatedSymbols += '\n';
+    generatedSymbols += `${symbols[symbolsKey]}`;
+    generatedSymbols += '\n';
+  }
+  generatedSymbols += '</svg>';
+
+  res.type('json')
+    .status(200)
+    .send({
+      data: generatedSymbols,
+    });
+});
+
 // Test route
 router.get('/', (req, res) => {
   res.json({
